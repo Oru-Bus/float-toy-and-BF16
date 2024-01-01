@@ -184,6 +184,10 @@
     border: none;
   }
 
+  #infinityOrNaNBF16 {
+    font-size: 20px;
+  }
+
 </style>
 <body>
   <h1>Float Toy</h1>
@@ -291,6 +295,7 @@
   </table>
   <form method="post" id="formBF16">
     <input type="number" step="any" id="decimalNumberBF16" placeholder="Ex: 12.345" required>
+    <p id="infinityOrNaNBF16"></p>
   </form>
 </body>
 <script src="./float16.js"></script>
@@ -600,13 +605,18 @@ function resetDecimal() {
 };
 
 decimalNumberInput.addEventListener("input", () => {
+  document.getElementById("infinityOrNaNBF16").innerText = '';
   calculateDecimal();
 });
 
 function calculateDecimal() {
   const decimalNumber = document.getElementById("decimalNumberBF16").value;
   if (Number.isInteger(parseFloat(decimalNumber))) {
-    integer = decimalNumber;
+    integer = parseInt(decimalNumber);
+    decimal = 0;
+  } else if (decimalNumber==='') {
+    integer = 0;
+    decimal = 0;
   } else {
     const decimalString = decimalNumber.toString();
     decimal = parseFloat("0." + (decimalString.split('.')[1] || "0"));
@@ -617,7 +627,7 @@ function calculateDecimal() {
 
 function decimalToBinary(){
   decimalBinary = '';
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 127; i++) {
     decimal = decimal*2
     if (decimal >= 1) {
       decimalBinary = decimalBinary+'1';
@@ -641,15 +651,23 @@ function calculateExponent() {
   let positionOne = integerDecimalBinary.indexOf('1');
   let positionDot = integerDecimalBinary.indexOf('.');
   if (positionOne===-1) {
-    exponent = 0;
+    mantissaBitsCases.forEach((element, index) => {
+      element.innerHTML = '0';
+    });
+    exponentBitsCases.forEach((element, index) => {
+      element.innerHTML = '0';
+    });
+    signBitCases.forEach((element) => {
+      element.innerHTML = '0';
+    });
   } else {
     if (positionOne<positionDot) {
       exponent = (positionDot-1)-positionOne;
     } else {
-      exponent = (positionDot-1)-positionOne;
+      exponent = positionDot-positionOne;
     };
+    calculateMantissaList();
   };
-  calculateMantissaList();
 };
 
 function calculateMantissaList() {
@@ -692,6 +710,7 @@ function signBitFunction() {
 
 document.querySelectorAll('td.signBitCaseBF16, table td.exponentCaseBF16, table td.mantissaCaseBF16').forEach((cell) => {
   cell.addEventListener('click', () => {
+    document.getElementById("infinityOrNaNBF16").innerText = '';
     toggleCellValue(cell);
   });
 });
@@ -711,15 +730,24 @@ function updateDisplayedValues() {
   
 function updateDecimalNumberInput() {
   const binaryNumber = signBitCases[0].innerHTML + exponentBF16List.join('') + mantissaBF16List.join('');
-  if (binaryNumber === '0111111110000000') {
-    document.getElementById("decimalNumberBF16").value = '0000';
-  } else if (binaryNumber === '1111111110000000') {
-    document.getElementById("decimalNumberBF16").value = '-0000';
+  if (exponentBF16List.join('') === '11111111') {
+    if (mantissaBF16List.join('') === '0000000') {
+      if (signBitCases[0].innerHTML === '0') {
+        document.getElementById("infinityOrNaNBF16").innerText = 'Infinity';
+        document.getElementById("decimalNumberBF16").value = '';
+      } else {
+        document.getElementById("infinityOrNaNBF16").innerText = '-Infinity';
+        document.getElementById("decimalNumberBF16").value = '';
+      };
+    } else {
+      document.getElementById("infinityOrNaNBF16").innerText = 'NaN';
+      document.getElementById("decimalNumberBF16").value = '';
+    }
   } else {
     const decimalNumber = binaryToDecimal(binaryNumber);
     document.getElementById("decimalNumberBF16").value = decimalNumber;
-    updateMathRepresentation();
   };
+  updateMathRepresentation();
 };
 
 function binaryToDecimal(binaryNumber) {
