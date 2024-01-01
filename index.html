@@ -126,7 +126,7 @@
   td.mantissaCaseBF16 {
     border: 1px solid black;
     font: inherit;
-    padding: 5px 2px;
+    padding: 5px 2.2px;
     font-size: 14px;
     text-align: center;
 }
@@ -173,6 +173,15 @@
 
   #mathTableBF16 td {
     padding: 0 10px 0 10px;
+  }
+
+  .darkBit {
+    background-color: #DDD;
+  }
+
+  #numberBit {
+    font-size: 10px;
+    border: none;
   }
 
 </style>
@@ -233,22 +242,42 @@
   </table>
   <h2>BF16</h2>
   <table>
-    <td class="signBitCaseBF16"></td>
-    <td class="exponentCaseBF16 0"></td>
-    <td class="exponentCaseBF16 1"></td>
-    <td class="exponentCaseBF16 2"></td>
-    <td class="exponentCaseBF16 3"></td>
-    <td class="exponentCaseBF16 4"></td>
-    <td class="exponentCaseBF16 5"></td>
-    <td class="exponentCaseBF16 6"></td>
-    <td class="exponentCaseBF16 7"></td>
-    <td class="mantissaCaseBF16 0"></td>
-    <td class="mantissaCaseBF16 1"></td>
-    <td class="mantissaCaseBF16 2"></td>
-    <td class="mantissaCaseBF16 3"></td>
-    <td class="mantissaCaseBF16 4"></td>
-    <td class="mantissaCaseBF16 5"></td>
-    <td class="mantissaCaseBF16 6"></td>
+    <tr id="numberBit">
+      <td class="darkBit">16</td>
+      <td class="darkBit">15</td>
+      <td class="darkBit">14</td>
+      <td class="darkBit">13</td>
+      <td>12</td>
+      <td>11</td>
+      <td>10</td>
+      <td>9</td>
+      <td class="darkBit">8</td>
+      <td class="darkBit">7</td>
+      <td class="darkBit">6</td>
+      <td class="darkBit">5</td>
+      <td>4</td>
+      <td>3</td>
+      <td>2</td>
+      <td>1</td>
+    </tr>
+    <tr id="bitsCases">
+      <td class="signBitCaseBF16"></td>
+      <td class="exponentCaseBF16 0"></td>
+      <td class="exponentCaseBF16 1"></td>
+      <td class="exponentCaseBF16 2"></td>
+      <td class="exponentCaseBF16 3"></td>
+      <td class="exponentCaseBF16 4"></td>
+      <td class="exponentCaseBF16 5"></td>
+      <td class="exponentCaseBF16 6"></td>
+      <td class="exponentCaseBF16 7"></td>
+      <td class="mantissaCaseBF16 0"></td>
+      <td class="mantissaCaseBF16 1"></td>
+      <td class="mantissaCaseBF16 2"></td>
+      <td class="mantissaCaseBF16 3"></td>
+      <td class="mantissaCaseBF16 4"></td>
+      <td class="mantissaCaseBF16 5"></td>
+      <td class="mantissaCaseBF16 6"></td>
+    </tr>
   </table>
   <table id="mathTableBF16" class="no-border">
     <tr>
