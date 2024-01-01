@@ -614,7 +614,7 @@ function calculateDecimal() {
   if (Number.isInteger(parseFloat(decimalNumber))) {
     integer = parseInt(decimalNumber);
     decimal = 0;
-  } else if (decimalNumber==='') {
+  } else if (decimalNumber==='' || decimalNumber==='0') {
     integer = 0;
     decimal = 0;
   } else {
@@ -770,21 +770,24 @@ function updateMathRepresentation() {
   const sign = signBitCases[0].innerHTML === '0' ? '1' : '-1';
   signElement.innerHTML = sign;
 
-  let exponentValue = parseInt(exponentBF16List.join(''), 2) - biasBF16;
-  let exponentText = `2<sup style="font-size: smaller;">${exponentValue}</sup>`;
-  exponentElement.innerHTML = exponentText;
-
-  let mantissaValue = 1;
-  for (let i = 0; i < mantissaBF16List.length; i++) {
-    mantissaValue += parseInt(mantissaBF16List[i]) * Math.pow(2, -(i + 1));
-  }
-
-  let mantissaText = `<span style="margin-right: 5px;">${mantissaValue}</span>`;
-  mantissaElement.innerHTML = mantissaText;
-};
-  
-function getSuperscript(number) {
-  const superscriptDigits = '⁰¹²³⁴⁵⁶⁷⁸⁹';
-  return Array.from(String(number), digit => superscriptDigits[digit]).join('');
+  if (exponentBF16List.join('') === '00000000') {
+    let exponentText = `2<sup style="font-size: smaller;">-126</sup>`;
+    exponentElement.innerHTML = exponentText;
+    if (mantissaBF16List.join('') === '0000000') {
+      let mantissaText = `<span style="margin-right: 5px;">0</span>`;
+      mantissaElement.innerHTML = mantissaText;
+      document.getElementById("decimalNumberBF16").value = '0';
+    };
+  } else {
+    let exponentValue = parseInt(exponentBF16List.join(''), 2) - biasBF16;
+    let exponentText = `2<sup style="font-size: 13px;">${exponentValue}</sup>`;
+    exponentElement.innerHTML = exponentText;
+    let mantissaValue = 1;
+    for (let i = 0; i < mantissaBF16List.length; i++) {
+      mantissaValue += parseInt(mantissaBF16List[i]) * Math.pow(2, -(i + 1));
+    }
+    let mantissaText = `<span style="margin-right: 5px;">${mantissaValue}</span>`;
+    mantissaElement.innerHTML = mantissaText;
+  };
 };
 </script>
