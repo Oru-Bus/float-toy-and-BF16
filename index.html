@@ -1,0 +1,733 @@
+<meta charset="utf8">
+<title>Float Toy</title>
+<style>
+  body {
+    margin: 50px;
+    font: 14px/20px sans-serif;
+    cursor: default;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  p {
+    margin: 30px 0;
+  }
+
+  h2 {
+    margin: 60px 0 30px 0;
+  }
+
+  table {
+    border-collapse: collapse;
+    font-size: 20px;
+    line-height: 14px;
+  }
+
+  td {
+    font: inherit;
+    padding: 0;
+    text-align: center;
+  }
+
+  td.sign { background: #BBF; }
+  td.exponent { background: #BFB; }
+  td.fraction { background: #FBB; }
+
+  td.sign.hover { background: #99D; }
+  td.exponent.hover { background: #9D9; }
+  td.fraction.hover { background: #D99; }
+
+  .input td {
+    border: 1px solid #000;
+    padding: 5px 2px;
+    font-size: 14px;
+  }
+
+  .zerox-col {
+    vertical-align: bottom;
+  }
+
+  .zerox {
+    height: 26px;
+    line-height: 26px;
+  }
+
+  .output-col {
+    width: 100%;
+    vertical-align: bottom;
+  }
+
+  .hex-col {
+    width: 100%;
+  }
+
+  .output {
+    font: inherit;
+    padding: 5px;
+    margin: -5px;
+    border: 0;
+    outline: none;
+    width: 100%;
+    min-width: 200px;
+    background: none;
+    height: 26px;
+    line-height: 26px;
+    box-sizing: content-box;
+  }
+
+  .output:hover, .output:focus {
+    background: rgba(0, 0, 0, 0.066);
+  }
+
+  .help {
+    height: 50px;
+    font-size: 20px;
+    line-height: 60px;
+    padding-left: 3px;
+    white-space: nowrap;
+  }
+
+  .help sup {
+    vertical-align: top;
+    font-size: 12px;
+    line-height: 50px;
+  }
+
+  .help span {
+    padding: 3px;
+    margin: -3px;
+  }
+
+  td.nibble {
+    font-size: 10px;
+    line-height: 6px;
+    border: none;
+  }
+
+  td.dark.nibble {
+    background: #DDD;
+  }
+
+  span.sign { background: #DDF; }
+  span.exponent { background: #DFD; }
+  span.fraction { background: #FDD; }
+
+  td.signBitCaseBF16 { background-color: #BBF; }
+  td.exponentCaseBF16 { background-color: #BFB; }
+  td.mantissaCaseBF16 { background-color: #FBB; }
+  td.signBitCaseBF16:hover { background-color: #99D; }
+  td.exponentCaseBF16:hover { background-color: #9D9; }
+  td.mantissaCaseBF16:hover { background-color: #D99; }
+
+  td.signBitCaseBF16,
+  td.exponentCaseBF16,
+  td.mantissaCaseBF16 {
+    border: 1px solid black;
+    font: inherit;
+    padding: 5px 2px;
+    font-size: 14px;
+    text-align: center;
+}
+
+  #mathTableBF16 {
+    border-collapse: collapse;
+    display: inline-block;
+  }
+
+  #mathTableBF16.no-border td {
+    border: none;
+  }
+
+  input::-webkit-inner-spin-button,
+  input::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    margin:0;
+  }
+
+  #decimalNumberBF16 {
+    font: inherit;
+    margin: -5px;
+    border: 0;
+    outline: none;
+    width: 100%;
+    min-width: 200px;
+    background: none;
+    height: 26px;
+    line-height: 26px;
+    box-sizing: content-box;
+    font-size: 20px;
+  }
+
+  #decimalNumberBF16:hover,  #decimalNumberBF16:focus {
+    background: rgba(0, 0, 0, 0.066);
+  }
+
+  #mathTableBF16,
+  #formBF16 {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 20px;
+  }
+
+  #mathTableBF16 td {
+    padding: 0 10px 0 10px;
+  }
+
+</style>
+<body>
+  <h1>Float Toy</h1>
+  <p>
+    Click on a cell below to toggle bit values, or edit the hex or decimal values directly.
+    Use this to build intuition for the IEEE floating-point format.
+    See Wikipedia for details on the <a href="https://en.wikipedia.org/wiki/Half-precision_floating-point_format">half-precision</a>, <a href="https://en.wikipedia.org/wiki/Single-precision_floating-point_format">single-precision</a> and <a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format">double-precision</a> floating-point formats.
+  </p>
+
+  <h2>16-bit (half)</h2>
+  <table>
+    <tr>
+      <td><span id="input16" class="input"></span></td>
+      <td class="zerox-col"><span class="zerox">&nbsp;&nbsp;=&nbsp;&nbsp;0x</span></td>
+      <td class="output-col"><input id="hex16" class="output"></td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <td><span id="help16" class="help"></span></td>
+      <td>&nbsp;&nbsp;=&nbsp;&nbsp;</td>
+      <td class="hex-col"><input id="output16" class="output"></td>
+    </tr>
+  </table>
+
+  <h2>32-bit (float)</h2>
+  <table>
+    <tr>
+      <td><span id="input32" class="input"></span></td>
+      <td class="zerox-col"><span class="zerox">&nbsp;&nbsp;=&nbsp;&nbsp;0x</span></td>
+      <td class="output-col"><input id="hex32" class="output"></td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <td><span id="help32" class="help"></span></td>
+      <td>&nbsp;&nbsp;=&nbsp;&nbsp;</td>
+      <td class="hex-col"><input id="output32" class="output"></td>
+    </tr>
+  </table>
+
+  <h2>64-bit (double)</h2>
+  <table>
+    <tr>
+      <td><span id="input64" class="input"></span></td>
+      <td class="zerox-col"><span class="zerox">&nbsp;&nbsp;=&nbsp;&nbsp;0x</span></td>
+      <td class="output-col"><input id="hex64" class="output"></td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <td><span id="help64" class="help"></span></td>
+      <td>&nbsp;&nbsp;=&nbsp;&nbsp;</td>
+      <td class="hex-col"><input id="output64" class="output"></td>
+    </tr>
+  </table>
+  <h2>BF16</h2>
+  <table>
+    <td class="signBitCaseBF16"></td>
+    <td class="exponentCaseBF16 0"></td>
+    <td class="exponentCaseBF16 1"></td>
+    <td class="exponentCaseBF16 2"></td>
+    <td class="exponentCaseBF16 3"></td>
+    <td class="exponentCaseBF16 4"></td>
+    <td class="exponentCaseBF16 5"></td>
+    <td class="exponentCaseBF16 6"></td>
+    <td class="exponentCaseBF16 7"></td>
+    <td class="mantissaCaseBF16 0"></td>
+    <td class="mantissaCaseBF16 1"></td>
+    <td class="mantissaCaseBF16 2"></td>
+    <td class="mantissaCaseBF16 3"></td>
+    <td class="mantissaCaseBF16 4"></td>
+    <td class="mantissaCaseBF16 5"></td>
+    <td class="mantissaCaseBF16 6"></td>
+  </table>
+  <table id="mathTableBF16" class="no-border">
+    <tr>
+      <td><span id="signMathsBF16" style="background-color: #DDF;"></span></td>
+      <td>x</td>
+      <td id="exponentMathsBF16" style="background-color: #DFD;"></td>
+      <td>x</td>
+      <td id="mantissaMathsBF16" style="background-color: #FDD;"></td>
+      <td>=</td>
+    </tr>
+  </table>
+  <form method="post" id="formBF16">
+    <input type="number" step="any" id="decimalNumberBF16" placeholder="Ex: 12.345" required>
+  </form>
+</body>
+<script src="./float16.js"></script>
+<script>
+const {Float16Array} = float16;
+
+(function () {
+
+  function load(array, exponentBits, input, output, help, hex) {
+    var bytes = new Uint8Array(array.buffer);
+    var hexLength = bytes.length;
+
+    function reduceNumber(x) {
+      var copy = bytes.length === 2 ? new Float16Array(1) : bytes.length === 4 ? new Float32Array(1) : new Float64Array(1);
+      copy[0] = +x;
+      var value = copy[0];
+      x = value === 0 && 1 / value === -Infinity ? '-0' : value + '';
+
+      if (x === 'NaN' || x === 'Infinity' || x === '-Infinity') {
+        return x;
+      }
+
+      var parts = /^([+-]?\d+)((?:\.\d+)?)((?:[eE][+-]?\d+)?)$/.exec(x);
+      var whole = parts[1];
+      var fraction = parts[2];
+      var exponent = parts[3];
+
+      // Remove digits one-by-one until the number changes
+      while (fraction.length > 0) {
+        // Try truncating
+        var truncatedFraction = fraction.slice(0, -1);
+        var text = whole + (truncatedFraction !== '.' ? truncatedFraction : '') + exponent;
+        copy[0] = +text;
+        var truncatedValue = copy[0];
+        if (truncatedValue === value) {
+          fraction = truncatedFraction;
+          x = text;
+          continue;
+        }
+
+        // Try rounding
+        var roundedFraction = truncatedFraction;
+        var i = roundedFraction.length - 1;
+        var zero = '0'.charCodeAt(0);
+        while (i > 0) {
+          var c = roundedFraction.charCodeAt(i) - zero;
+          roundedFraction = roundedFraction.slice(0, i) + String.fromCharCode((c + 1) % 10 + zero) + roundedFraction.slice(i + 1);
+          if (c < 9) break; // Do we need to carry?
+          i--;
+        }
+        var text = whole + (roundedFraction !== '.' ? roundedFraction : '') + exponent;
+        copy[0] = +text;
+        var roundedValue = copy[0];
+        if (roundedValue === value) {
+          fraction = roundedFraction;
+          x = text;
+          continue;
+        }
+
+        // Both numbers changed, keep the old value
+        break;
+      }
+
+      return x;
+    }
+
+    // Populate HTML
+    var html = '<table>';
+    // The bit numbers
+    html += '<tr>';
+    for (var i = 0; i < bytes.length; i++) {
+      for (var j = 0; j < 8; j++) {
+        var index = (bytes.length - i) * 8 - j;
+        if (j > 3) {
+          html += '<td class="nibble">' + index + '</td>'
+        } else {
+          html += '<td class="dark nibble">' + index + '</td>'
+        }
+      }
+    }
+    html += '</tr>';
+    // The bits
+    html += '<tr>';
+    for (var i = 0; i < bytes.length; i++) {
+      for (var j = 0; j < 8; j++) {
+        var index = i * 8 + j;
+        var className =
+          index === 0 ? 'sign' :
+            index < 1 + exponentBits ? 'exponent' :
+              'fraction';
+        html += '<td data-index="' + index + '" class="' + className + '">0</td>';
+      }
+    }
+    html += '</tr></table>';
+    input.innerHTML = html;
+
+    // Grab elements
+    var elements = [];
+    for (var i = 0; i < bytes.length * 8; i++) {
+      (function (i) {
+        var element = input.querySelector('[data-index="' + i + '"]');
+        element.onmouseover = function () { this.classList.add('hover'); };
+        element.onmouseout = function () { this.classList.remove('hover'); };
+        elements.push(element);
+      })(i);
+    }
+
+    // Event handlers
+    function extractNumber() {
+      return +(output.value.replace(/\b(?:infinity|inf)\b/gi, 'Infinity'));
+    }
+    output.onkeydown = function (e) {
+      if (e.which === 13) {
+        e.preventDefault();
+        output.blur();
+      }
+
+      else if (e.which === 38) {
+        e.preventDefault();
+        output.value = reduceNumber(extractNumber() + 1);
+        output.select();
+        output.oninput();
+      }
+
+      else if (e.which === 40) {
+        e.preventDefault();
+        output.value = reduceNumber(extractNumber() - 1);
+        output.select();
+        output.oninput();
+      }
+    };
+    output.onfocus = function () {
+      output.select();
+    };
+    output.oninput = function () {
+      array[0] = extractNumber();
+      render();
+    };
+    output.onblur = function () {
+      render();
+    };
+
+    hex.onkeydown = function (e) {
+      if (e.which === 13) {
+        e.preventDefault();
+        hex.blur();
+      }
+    };
+    hex.onfocus = function () {
+      hex.select();
+    };
+    hex.oninput = function () {
+      var hexAlphabet = '0123456789abcdefABCDEF';
+      var validHexCharas = hex.value.split('').every(function (c) {
+        return hexAlphabet.split('').lastIndexOf(c) !== -1;
+      });
+      if (hex.value.length > (hexLength * 2) || validHexCharas === false) {
+        hex.value = hex.value.slice(0, -1);
+        return;
+      }
+
+      var tmpBytes = toByteArray(hex.value);
+      bytes.fill(0);
+      bytes.set(tmpBytes.reverse(), hexLength - tmpBytes.length);
+      render();
+    };
+    hex.onblur = function () {
+      render();
+    };
+
+    input.onmousedown = function (e) {
+      if ('index' in e.target.dataset) {
+        var index = e.target.dataset.index | 0;
+        var byteIndex = bytes.length - (index >> 3) - 1;
+        var byteMask = 1 << (7 - (index & 7));
+        var mouseDownValue = bytes[byteIndex] & byteMask ? 0 : 1;
+        bytes[byteIndex] ^= byteMask;
+        render();
+
+        document.onmousemove = function (e2) {
+          if ('index' in e2.target.dataset) {
+            var index = e2.target.dataset.index | 0;
+            var byteIndex = bytes.length - (index >> 3) - 1;
+            var byteMask = 1 << (7 - (index & 7));
+            bytes[byteIndex] = (bytes[byteIndex] & ~byteMask) | (byteMask * mouseDownValue);
+            render();
+          }
+        };
+
+        document.onmouseup = function () {
+          document.onmousemove = null;
+          document.onmouseup = null;
+        };
+      }
+    };
+
+    // Update loop
+    function render() {
+      for (var i = 0; i < bytes.length * 8; i++) {
+        elements[i].textContent = ((bytes[bytes.length - (i >> 3) - 1] >> (7 - (i & 7))) & 1);
+      }
+
+      // Figure out exponent
+      var exponent = 0;
+      for (var i = 0; i < exponentBits; i++) {
+        var index = 1 + i;
+        var bit = (bytes[bytes.length - (index >> 3) - 1] >> (7 - (index & 7))) & 1;
+        exponent += bit << (exponentBits - i - 1);
+      }
+      var exponentBias = (1 << (exponentBits - 1)) - 1;
+      exponent -= exponentBias;
+
+      // Figure out fraction
+      var copyBytes = new Uint8Array(bytes);
+      var copy = bytes.length === 2 ? new Float16Array(copyBytes.buffer) : bytes.length === 4 ? new Float32Array(copyBytes.buffer) : new Float64Array(copyBytes.buffer);
+      for (var i = 0; i < exponentBits; i++) {
+        var index = 1 + i;
+        var byteIndex = bytes.length - (index >> 3) - 1;
+        var byteMask = 1 << (7 - (index & 7));
+        copyBytes[byteIndex] = (copyBytes[byteIndex] & ~byteMask) | (i === 0 ? 0 : byteMask);
+      }
+      var signIndex = bytes.length - 1;
+      var signMask = 0x80;
+      var sign = copyBytes[signIndex] & signMask;
+      copyBytes[signIndex] &= ~signMask;
+      var fraction = copy[0];
+
+      // Handle denormal numbers
+      if (exponent === -exponentBias) {
+        exponent++;
+        fraction--;
+      }
+
+      // Update views according to which input was edited
+      if (document.activeElement === hex) {
+        var value = array[0];
+        output.value = reduceNumber(value === 0 && 1 / value === -Infinity ? '-0' : value);
+      } else if (document.activeElement === output) {
+        var tmpBytes = bytes.slice().reverse();
+        hex.value = toHexString(tmpBytes);
+      } else { // This branch is for when the individual bits get toggled
+        var value = array[0];
+        output.value = reduceNumber(value === 0 && 1 / value === -Infinity ? '-0' : value);
+        var tmpBytes = bytes.slice().reverse();
+        hex.value = toHexString(tmpBytes);
+      }
+
+      help.innerHTML =
+        '<span class="sign">' + (sign ? -1 : 1) + '</span>' +
+        '&nbsp;&nbsp;&times;&nbsp;&nbsp;' +
+        '<span class="exponent">2<sup>' + exponent + '</sup></span>' +
+        '&nbsp;&nbsp;&times;&nbsp;&nbsp;' +
+        '<span class="fraction">' + reduceNumber(fraction) + '</span>';
+    }
+
+    function toHexString(byteArray) {
+      return Array.from(byteArray, function (byte) {
+        return ('0' + byte.toString(16).toUpperCase()).slice(-2);
+      }).join('')
+    }
+
+    function toByteArray(hexString) {
+      var result = [];
+      if (hexString.length % 2 == 1) {
+        hexString = hexString + '0';
+      }
+      for (var i = 0; i < hexString.length; i += 2) {
+        result.push(parseInt(hexString.substr(i, 2), 16));
+      }
+      return result;
+    }
+
+    render();
+  }
+
+  load(new Float16Array([Math.PI]), 5, document.getElementById('input16'), document.getElementById('output16'), document.getElementById('help16'), document.getElementById('hex16'));
+  load(new Float32Array([Math.PI]), 8, document.getElementById('input32'), document.getElementById('output32'), document.getElementById('help32'), document.getElementById('hex32'));
+  load(new Float64Array([Math.PI]), 11, document.getElementById('input64'), document.getElementById('output64'), document.getElementById('help64'), document.getElementById('hex64'));
+
+})();
+
+</script>
+<script>
+const decimalNumberInput = document.querySelector("#decimalNumberBF16");
+
+let mantissaBF16List = [];
+let exponentBF16List = [];
+let signBit;
+let exponent;
+let decimalBinary;
+let integerBinary;
+let integer8Bits;
+let integer;
+let decimal;
+let biasBF16 = 127
+const signBitCases = document.querySelectorAll(".signBitCaseBF16");
+const exponentBitsCases = document.querySelectorAll(".exponentCaseBF16");
+const mantissaBitsCases = document.querySelectorAll(".mantissaCaseBF16");
+
+
+resetDecimal();
+
+function resetDecimal() {
+  document.getElementById("decimalNumberBF16").value = 3.141;
+  calculateDecimal();
+  updateMathRepresentation();
+};
+
+decimalNumberInput.addEventListener("input", () => {
+  calculateDecimal();
+});
+
+function calculateDecimal() {
+  const decimalNumber = document.getElementById("decimalNumberBF16").value;
+  if (Number.isInteger(parseFloat(decimalNumber))) {
+    integer = decimalNumber;
+  } else {
+    const decimalString = decimalNumber.toString();
+    decimal = parseFloat("0." + (decimalString.split('.')[1] || "0"));
+    integer = parseInt(decimalString.split('.')[0]);
+  }
+  decimalToBinary();
+};
+
+function decimalToBinary(){
+  decimalBinary = '';
+  for (let i = 0; i < 7; i++) {
+    decimal = decimal*2
+    if (decimal >= 1) {
+      decimalBinary = decimalBinary+'1';
+      decimal = decimal - 1
+    } else {
+      decimalBinary = decimalBinary+'0';
+    }
+  };
+  integerToBinary();
+};
+
+function integerToBinary(){
+  integer8Bits = Number(integer).toString(2).padStart(8,'0');
+  integerBinary = Number(integer).toString(2);
+  calculateExponent();
+};
+
+function calculateExponent() {
+  let integerDecimalBinary = integerBinary.toString()+'.'+decimalBinary.toString();
+  exponent = 0;
+  let positionOne = integerDecimalBinary.indexOf('1');
+  let positionDot = integerDecimalBinary.indexOf('.');
+  if (positionOne===-1) {
+    exponent = 0;
+  } else {
+    if (positionOne<positionDot) {
+      exponent = (positionDot-1)-positionOne;
+    } else {
+      exponent = (positionDot-1)-positionOne;
+    };
+  };
+  calculateMantissaList();
+};
+
+function calculateMantissaList() {
+  let mantissa;
+  let integer8DecimalBinary = integer8Bits.toString()+'.'+decimalBinary.toString();
+  let positionOne = integer8DecimalBinary.indexOf('1');
+  if (positionOne>0) {
+    mantissa = integer8DecimalBinary.slice(positionOne+1, positionOne+9).replace('.', '');
+  } else {
+    mantissa = integer8DecimalBinary.slice(positionOne+1, positionOne+8);
+  };
+  mantissaBF16List = mantissa.split('');
+  mantissaBitsCases.forEach((element, index) => {
+    element.innerHTML = mantissaBF16List[index];
+  });
+  calculateExponentList();
+};
+
+function calculateExponentList() {
+  let exponentBias = exponent+biasBF16;
+  exponent = Number(exponentBias).toString(2).padStart(8,'0');
+  exponentBF16List = exponent.split('');
+  exponentBitsCases.forEach((element, index) => {
+    element.innerHTML = exponentBF16List[index];
+  });
+  signBitFunction();
+};
+
+function signBitFunction() {
+  if (document.getElementById("decimalNumberBF16").value >= 0) {
+    signBit = 0;
+  } else {
+    signBit = 1;
+  };
+  signBitCases.forEach((element) => {
+    element.innerHTML = signBit;
+  });
+  updateMathRepresentation();
+};
+
+document.querySelectorAll('td.signBitCaseBF16, table td.exponentCaseBF16, table td.mantissaCaseBF16').forEach((cell) => {
+  cell.addEventListener('click', () => {
+    toggleCellValue(cell);
+  });
+});
+  
+function toggleCellValue(cell) {
+  const currentValue = cell.innerHTML;
+  const newValue = currentValue === '0' ? '1' : '0';
+  cell.innerHTML = newValue;
+  updateDisplayedValues();
+};
+
+function updateDisplayedValues() {
+  mantissaBF16List = Array.from(mantissaBitsCases).map((element) => element.innerHTML);
+  exponentBF16List = Array.from(exponentBitsCases).map((element) => element.innerHTML);
+  updateDecimalNumberInput();
+};
+  
+function updateDecimalNumberInput() {
+  const binaryNumber = signBitCases[0].innerHTML + exponentBF16List.join('') + mantissaBF16List.join('');
+  if (binaryNumber === '0111111110000000') {
+    document.getElementById("decimalNumberBF16").value = '0000';
+  } else if (binaryNumber === '1111111110000000') {
+    document.getElementById("decimalNumberBF16").value = '-0000';
+  } else {
+    const decimalNumber = binaryToDecimal(binaryNumber);
+    document.getElementById("decimalNumberBF16").value = decimalNumber;
+    updateMathRepresentation();
+  };
+};
+
+function binaryToDecimal(binaryNumber) {
+  const sign = binaryNumber[0] === '0' ? 1 : -1;
+  const exponent = parseInt(binaryNumber.slice(1, 9), 2) - biasBF16;
+  const mantissa = binaryNumber.slice(9);
+
+  let decimalValue = 1;
+  for (let i = 0; i < mantissa.length; i++) {
+    decimalValue += parseInt(mantissa[i]) * Math.pow(2, -(i + 1));
+  }
+  return sign * decimalValue * Math.pow(2, exponent);
+};
+  
+function updateMathRepresentation() {
+  const signElement = document.getElementById("signMathsBF16");
+  const exponentElement = document.getElementById("exponentMathsBF16");
+  const mantissaElement = document.getElementById("mantissaMathsBF16");
+
+  const sign = signBitCases[0].innerHTML === '0' ? '1' : '-1';
+  signElement.innerHTML = sign;
+
+  let exponentValue = parseInt(exponentBF16List.join(''), 2) - biasBF16;
+  let exponentText = `2<sup style="font-size: smaller;">${exponentValue}</sup>`;
+  exponentElement.innerHTML = exponentText;
+
+  let mantissaValue = 1;
+  for (let i = 0; i < mantissaBF16List.length; i++) {
+    mantissaValue += parseInt(mantissaBF16List[i]) * Math.pow(2, -(i + 1));
+  }
+
+  let mantissaText = `<span style="margin-right: 5px;">${mantissaValue}</span>`;
+  mantissaElement.innerHTML = mantissaText;
+};
+  
+function getSuperscript(number) {
+  const superscriptDigits = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+  return Array.from(String(number), digit => superscriptDigits[digit]).join('');
+};
+</script>
