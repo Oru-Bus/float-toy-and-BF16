@@ -281,6 +281,8 @@
       <td class="mantissaCaseBF16 4"></td>
       <td class="mantissaCaseBF16 5"></td>
       <td class="mantissaCaseBF16 6"></td>
+      <td>=</td>
+      <td><p id="hexaBF16"></p></td>
     </tr>
   </table>
   <table id="mathTableBF16" class="no-border">
@@ -789,5 +791,19 @@ function updateMathRepresentation() {
     let mantissaText = `<span style="margin-right: 5px;">${mantissaValue}</span>`;
     mantissaElement.innerHTML = mantissaText;
   };
+  updateHexaRepresentation();
+};
+
+function updateHexaRepresentation() {
+  var hexValue = '';
+  let fourBits = [[mantissaBF16List[6], mantissaBF16List[5], mantissaBF16List[4], mantissaBF16List[3]],
+  [mantissaBF16List[2], mantissaBF16List[1], mantissaBF16List[0], exponentBF16List[7]],
+  [exponentBF16List[6], exponentBF16List[5], exponentBF16List[4], exponentBF16List[3]],
+  [exponentBF16List[2], exponentBF16List[1], exponentBF16List[0], signBit]];
+  for (let i = 0; i < 4; i++) {
+    var decimalValue = parseInt(fourBits[i].join(''), 2);
+    hexValue = decimalValue.toString(16).toUpperCase()+hexValue;
+  };
+  document.getElementById("hexaBF16").innerText = hexValue;
 };
 </script>
