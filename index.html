@@ -734,33 +734,19 @@ function updateDisplayedValues() {
   
 function updateDecimalNumberInput() {
   const binaryNumber = signBitCases[0].innerHTML + exponentBF16List.join('') + mantissaBF16List.join('');
-  // Cas particulier pour 0+ et 0-
-  if (exponentBF16List.join('') === '00000000' && mantissaBF16List.join('') === '0000000') {
-    if (signBitCases[0].innerHTML === '0') {
-      document.getElementById("decimalNumberBF16").value = '+0'; // Afficher 0+ si le bit de signe est 0
-    } else {
-      document.getElementById("decimalNumberBF16").value = '-0'; // Afficher 0- si le bit de signe est 1
-    }
-    document.getElementById("infinityOrNaNBF16").innerText = '';
-    return; // Sortir de la fonction pour éviter les autres calculs
-  }
-
-  // Vérification pour les cas Infinity et NaN
   if (exponentBF16List.join('') === '11111111') {
     if (mantissaBF16List.join('') === '0000000') {
       if (signBitCases[0].innerHTML === '0') {
-        document.getElementById("infinityOrNaNBF16").innerText = 'Infinity';
-        document.getElementById("decimalNumberBF16").value = '';
+        document.getElementById("decimalNumberBF16").value = 'Infinity';
       } else {
-        document.getElementById("infinityOrNaNBF16").innerText = '-Infinity';
-        document.getElementById("decimalNumberBF16").value = '';
+        document.getElementById("decimalNumberBF16").value = '-Infinity';
       }
     } else {
-      document.getElementById("infinityOrNaNBF16").innerText = 'NaN';
-      document.getElementById("decimalNumberBF16").value = '';
+      document.getElementById("decimalNumberBF16").value = 'NaN';
     }
+  } else if (exponentBF16List.join('') === '00000000' && mantissaBF16List.join('') === '0000000') {
+    document.getElementById("decimalNumberBF16").value = '+0';
   } else {
-    // Conversion binaire vers décimal
     const decimalNumber = binaryToDecimal(binaryNumber);
     document.getElementById("decimalNumberBF16").value = decimalNumber;
   }
