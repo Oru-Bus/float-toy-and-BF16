@@ -796,15 +796,19 @@ function updateMathRepresentation() {
 };
 
 function updateHexaRepresentation() {
-  var hexValue = '';
-  let fourBits = [[mantissaBF16List[6], mantissaBF16List[5], mantissaBF16List[4], mantissaBF16List[3]],
-  [mantissaBF16List[2], mantissaBF16List[1], mantissaBF16List[0], exponentBF16List[7]],
-  [exponentBF16List[6], exponentBF16List[5], exponentBF16List[4], exponentBF16List[3]],
-  [exponentBF16List[2], exponentBF16List[1], exponentBF16List[0], signBit]];
-  for (let i = 0; i < 4; i++) {
-    var decimalValue = parseInt(fourBits[i].join(''), 2);
-    hexValue = decimalValue.toString(16).toUpperCase()+hexValue;
-  };
+  // Reconstruction complète de la représentation BF16 en binaire (signe, exposant, mantisse)
+  const binaryNumber = signBit + exponentBF16List.join('') + mantissaBF16List.join('');
+
+  // Convertir le nombre binaire en groupes de 4 bits en hexadécimal
+  let hexValue = '';
+  for (let i = 0; i < binaryNumber.length; i += 4) {
+    const fourBits = binaryNumber.slice(i, i + 4); // Extraire 4 bits
+    const decimalValue = parseInt(fourBits, 2);    // Convertir en décimal
+    hexValue += decimalValue.toString(16).toUpperCase(); // Convertir en hexadécimal et ajouter au résultat
+  }
+
+  // Affichage de la valeur hexadécimale finale
   document.getElementById("hexaBF16").innerText = hexValue;
-};
+}
+
 </script>
