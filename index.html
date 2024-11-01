@@ -184,6 +184,10 @@
     border: none;
   }
 
+  #hexResult {
+    font-size: 20px;
+  }
+
 
 </style>
 <body>
@@ -278,10 +282,9 @@
       <td class="mantissaCaseBF16 4"></td>
       <td class="mantissaCaseBF16 5"></td>
       <td class="mantissaCaseBF16 6"></td>
-      <td>=</td>
-      <td><p id="hexaBF16"></p></td>
     </tr>
   </table>
+  <p id="hexResult">= <span id="hexaBF16"></span></p>
   <table id="mathTableBF16" class="no-border">
     <tr>
       <td><span id="signMathsBF16" style="background-color: #DDF;"></span></td>
@@ -730,6 +733,7 @@ function updateDisplayedValues() {
   mantissaBF16List = Array.from(mantissaBitsCases).map((element) => element.innerHTML);
   exponentBF16List = Array.from(exponentBitsCases).map((element) => element.innerHTML);
   updateDecimalNumberInput();
+  updateHexaRepresentation(); // Assurez-vous d'appeler cette fonction ici
 };
   
 function updateDecimalNumberInput() {
@@ -808,7 +812,7 @@ function updateHexaRepresentation() {
   }
 
   // Affichage de la valeur hexadécimale finale
-  document.getElementById("hexaBF16").innerText = hexValue;
+  document.getElementById("hexaBF16").innerText = "0x"+hexValue;
 }
 
 </script>
