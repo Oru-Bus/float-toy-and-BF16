@@ -608,7 +608,7 @@ decimalNumberInput.addEventListener("input", (event) => {
 resetDecimal();
 
 function resetDecimal() {
-  document.getElementById("decimalNumberBF16").value = 3.141;
+  document.getElementById("decimalNumberBF16").value = 3.140625;
   calculateDecimal();
   updateMathRepresentation();
 };
@@ -748,8 +748,6 @@ function updateDecimalNumberInput() {
     } else {
       document.getElementById("decimalNumberBF16").value = 'NaN';
     }
-  } else if (exponentBF16List.join('') === '00000000' && mantissaBF16List.join('') === '0000000') {
-    document.getElementById("decimalNumberBF16").value = '+0';
   } else {
     const decimalNumber = binaryToDecimal(binaryNumber);
     document.getElementById("decimalNumberBF16").value = decimalNumber;
@@ -800,11 +798,13 @@ function updateMathRepresentation() {
 };
 
 function updateHexaRepresentation() {
+  const signBitValue = signBitCases[0].innerHTML;
   // Reconstruction complète de la représentation BF16 en binaire (signe, exposant, mantisse)
-  const binaryNumber = signBit + exponentBF16List.join('') + mantissaBF16List.join('');
+  const binaryNumber = signBitValue + exponentBF16List.join('') + mantissaBF16List.join('');
 
   // Convertir le nombre binaire en groupes de 4 bits en hexadécimal
   let hexValue = '';
+  console.log(binaryNumber);
   for (let i = 0; i < binaryNumber.length; i += 4) {
     const fourBits = binaryNumber.slice(i, i + 4); // Extraire 4 bits
     const decimalValue = parseInt(fourBits, 2);    // Convertir en décimal
